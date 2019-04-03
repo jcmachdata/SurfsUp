@@ -1,8 +1,10 @@
 from flask import Flask, jsonify
 import sqlalchemy
+##from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.ext.automap import automap_base
 from sqlalchemy.orm import Session
 from sqlalchemy import create_engine, func
+
 
 engine = create_engine("sqlite:///Resources/hawaii.sqlite")
 # reflect an existing database into a new model
@@ -18,11 +20,11 @@ session = Session(engine)
 
 app = Flask(__name__)
 
+
 @app.route("/")
 def welcome():
-    return ("Welcome to my Hawaii weather app!"
-        f"test"
-        f"Available Routes:<br/>"
+    return ("Welcome to my Hawaii weather app! <br/>"
+        f"Test Available Routes:<br/>"
         f"/api/v1.0/precipitation<br/>"
         f"/api/v1.0/tobs<br/>"
         f"api/v1.0/stations<br/>"

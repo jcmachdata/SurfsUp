@@ -29,31 +29,39 @@ def welcome():
         f"/api/v1.0/&lt;start&gt;<br/>"
         f"/api/v1.0/&lt;start&gt;/&lt;end&gt;<br/>"
             )
-  
+    
 
 @app.route("/api/v1.0/precipitation")
 def precipitation():
+    session = Session(engine)
     precip = session.query(Measurement.date, Measurement.prcp).filter(Measurement.date >= '2016-08-23').all()
     precip_dict = dict(precip)
     return jsonify(precip_dict)
+    
 
 @app.route("/api/v1.0/stations")
 def stations():
-    stationlist = session.query(Measurement.station).all()
+    session = Session(engine)
+    stationlist = session.query(Station.station).all()
     return jsonify(stationlist)
+    
 
 @app.route("/api/v1.0/tobs")
 def temperature():
+    session = Session(engine)
     temp = session.query(Measurement.tobs).filter(Measurement.station == "USC00519281", Measurement.date >= '2016-08-23').all()
     return jsonify(temp)
+    
 
 @app.route("/api/v1.0/<start>")
 def temperaturestart(start):
+    session = Session(engine)
     tempstart = session.query(Measurement.tobs).filter(Measurement.station == "USC00519281", Measurement.date >= start).all()
     return jsonify(tempstart)
-
+    
 @app.route("/api/v1.0/<start>/<end>")
 def calc_temps(start_date, end_date):
+    session = Session(engine)
     """TMIN, TAVG, and TMAX for a list of dates.
     
     Args:
@@ -67,6 +75,7 @@ def calc_temps(start_date, end_date):
     startend = session.query(func.min(Measurement.tobs), func.avg(Measurement.tobs), func.max(Measurement.tobs)).\
         filter(Measurement.date >= start_date).filter(Measurement.date <= end_date).all()
     return jsonify(startend)
+   
 
 if __name__ == "__main__":
     app.run(debug=True, port=5001)
